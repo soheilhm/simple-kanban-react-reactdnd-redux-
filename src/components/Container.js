@@ -9,6 +9,12 @@ class Container extends Component {
 		super(props);
 		this.state = { cards: props.list };
 	}
+	
+	componentWillUpdate(nextProps, nextState){
+		console.log("Container: " + this.props.id + " Soon to be updated: \n" );
+		console.log("And this state: \n");
+		console.log(nextState);
+	}
 
 	pushCard(card) {
 		this.setState(update(this.state, {
