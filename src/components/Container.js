@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import update from 'react/lib/update';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import Card from './Card';
 import { DropTarget } from 'react-dnd';
 
@@ -7,13 +9,11 @@ class Container extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { cards: props.list };
+		this.state = { cards: props.cards };
 	}
-	
+
 	componentWillUpdate(nextProps, nextState){
 		console.log("Container: " + this.props.id + " Soon to be updated: \n" );
-		console.log("And this state: \n");
-		console.log(nextState);
 	}
 
 	pushCard(card) {
@@ -82,20 +82,25 @@ class Container extends Component {
   }
 }
 
-const cardTarget = {
+
+const specs = {
 	drop(props, monitor, component ) {
 		const { id } = props;
 		const sourceObj = monitor.getItem();
 		//if the Container’s id is different from the Container’s id of the object being dropped then we push the element.
 		// The return is an object with the Container’s id that is used later in "endDrag" function to clear the first Container after the card is moved
-		if ( id !== sourceObj.listId ) component.pushCard(sourceObj.card);
+		if ( id !== sourceObj.listId ){
+			component.pushCard(sourceObj.card);
+		}
 		return {
 			listId: id
 		};
+
 	}
 }
 
-export default DropTarget("CARD", cardTarget, (connect, monitor) => ({
+
+export default DropTarget("CARD", specs, (connect, monitor) => ({
 	connectDropTarget: connect.dropTarget(),
 	isOver: monitor.isOver(),
 	canDrop: monitor.canDrop()
